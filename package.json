@@ -4,7 +4,7 @@
   "description": "부문 event log file writer",
   "main": "app.js",
   "scripts": {
-    "test": "node ."
+    "start": "node ."
   },
   "author": "cji",
   "license": "ISC",
