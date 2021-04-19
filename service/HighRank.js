@@ -9,7 +9,7 @@ module.exports.searchAndtransm = async function() {
     schedule.scheduleJob('5 * * * * *', async function() {
         let rtnResult = {};
         try {
-            const tableNames = process.env.TABLE_NAMES.split(',');
+            const tableNames = process.env.HIGHRANK_TABLE_NAMES.split(',');
 
             for (tableName of tableNames) {
                 const result = await db.sequelize.transaction(async (t) => {
