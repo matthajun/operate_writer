@@ -6,7 +6,7 @@ const db = require('../models');
 const {ClickHouse} = require('clickhouse');
 const clickhouse = new ClickHouse({
     url: process.env.BUMUN_CH_ADDRESS,
-    port: 8123,
+    port: 8125,
     debug: false,
     basicAuth: null,
     isUseGzip: false,
