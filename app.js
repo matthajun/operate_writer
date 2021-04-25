@@ -18,9 +18,14 @@ app.set('port', process.env.PORT || 8002);
 const stix_state = require('./STIX_service/stixInsert_managstate');
 
 const HighRank = require('./service/HighRank');
+const HighRank_corr1 = require('./ai/HighRank_corr1');
+const HighRank_corr2 = require('./ai/HighRank_corr2');
+const HighRank_log = require('./ai/HighRank_log');
+const HighRank_packet = require('./ai/HighRank_packet');
+const HighRank_op1 = require('./ai/HighRank_op1');
+const HighRank_op2 = require('./ai/HighRank_op2');
 
 //app.set('view engine', 'html');
-
 sequelize.sync({ force: false })
     .then(() => {
         winston.info('success db connect ');
@@ -83,3 +88,11 @@ app.listen(app.get('port'), () => {
 
 HighRank.searchAndtransm();
 stix_state.searchAndInsert();
+
+//클릭하우스 AI 결과테이블 상위연계
+HighRank_corr1.searchAndtransm();
+HighRank_corr2.searchAndtransm();
+HighRank_log.searchAndtransm();
+HighRank_packet.searchAndtransm();
+HighRank_op1.searchAndtransm();
+HighRank_op2.searchAndtransm();

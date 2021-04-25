@@ -41,7 +41,6 @@ module.exports.parseAndInsert = async function(req) {
     let rtnResult = {};
     try {
 
-        const trans = await db.sequelize.transaction(async (t) => {
             for (const query of queries) {
                 let rslt = await clickhouse.query(query).toPromise();
 
@@ -49,7 +48,7 @@ module.exports.parseAndInsert = async function(req) {
                     throw new Error(rslt);
                 }
             }
-        })
+
 
     } catch (error) {
         winston.error(error.stack);

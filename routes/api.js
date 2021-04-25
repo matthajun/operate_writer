@@ -15,19 +15,18 @@ router.post('/v1', async (req, res, next) => {
     try {
         winston.debug("post id " + req.body.header.message_id);
         const codeId = req.body.header.message_id;
-/*
-        if (codeId[0] !== 'L') {
-            //confirm_code check, 이상행위 데이터에 대해서만 실행
-            const reqData = req.body;
-            const reqConfirmCode = reqData.header.confirm_code;
-            const localMakeConfirmCode = await confirmutils.makeConfirmCode(JSON.stringify(reqData.body));
 
-            if (reqConfirmCode !== localMakeConfirmCode) {
-                winston.error(`${localMakeConfirmCode} ,  ${reqConfirmCode}`);
-                const errCode = "93";
-                throw Error(`{"res_cd":"${errCode}"}`);
-            }
-        }*/
+        //confirm_code check
+        const reqData = req.body;
+        const reqConfirmCode = reqData.header.confirm_code;
+        const localMakeConfirmCode = await confirmutils.makeConfirmCode(reqData.body);
+
+        if (reqConfirmCode !== localMakeConfirmCode) {
+            winston.error(`${localMakeConfirmCode} ,  ${reqConfirmCode}`);
+            const errCode = "93";
+            throw Error(`{"res_cd":"${errCode}"}`);
+        }
+
 
         let result =  {};
         let ch_result = {};

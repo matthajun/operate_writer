@@ -15,8 +15,6 @@ module.exports.searchAndtransm = async function() {
                 const result = await db.sequelize.transaction(async (t) => {
                     let tableInfo = {};
 
-                    winston.info("********************************************************************************");
-                    winston.info("*******************query start *************************");
                     let rslt = await db[tableName.toUpperCase()].findAll({where: {trans_tag: 'C'}}).then(users => {
                         if (users) {
                             for (user of users) {
@@ -24,12 +22,12 @@ module.exports.searchAndtransm = async function() {
                                 user.update({trans_tag: 'E'});
                                 childTable.push(user.dataValues);
                                 tableInfo = {tableName: tableName, tableData: _.cloneDeep(childTable)};
-                                makereq.highrankPush(tableInfo);
+                                if(tableInfo.tableData.length) {
+                                    makereq.highrankPush(tableInfo);
+                                }
                             }
                         }
                     });
-                    winston.info("********************************************************************************");
-                    winston.info("*******************query end *************************");
                 });
             }
         } catch (error) {

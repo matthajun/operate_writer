@@ -10,11 +10,13 @@ config.logQueryParameters = false;
 config.logging = false;
 // test
 const db = {};
+
 let sequelize = new Sequelize(
     config.database, config.username, config.password ,config
 );
 
 db.sequelize = sequelize;
+
 
 fs
     .readdirSync(__dirname)
