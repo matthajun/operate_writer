@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const makejson = require('./utils/makejson');
 const winston = require('./config/winston')(module);
 dotenv.config();
-//const v1 = require('./routes/v1');
+
 const api = require('./routes/api');
 const { sequelize } = require('./models');
 
@@ -16,14 +16,9 @@ const app = express();
 app.set('port', process.env.PORT || 8002);
 
 const stix_state = require('./STIX_service/stixInsert_managstate');
-
 const HighRank = require('./service/HighRank');
-const HighRank_corr1 = require('./ai/HighRank_corr1');
-const HighRank_corr2 = require('./ai/HighRank_corr2');
-const HighRank_log = require('./ai/HighRank_log');
-const HighRank_packet = require('./ai/HighRank_packet');
-const HighRank_op1 = require('./ai/HighRank_op1');
-const HighRank_op2 = require('./ai/HighRank_op2');
+const http = require('http');
+const https = require('https');
 
 //app.set('view engine', 'html');
 sequelize.sync({ force: false })
@@ -34,13 +29,30 @@ sequelize.sync({ force: false })
         winston.error(err.stack);
     });
 
+var protocol = 'https';
+
+if (protocol === 'https') {
+    var sslConfig = require('./config/ssl-config');
+    var options = {
+        key: sslConfig.privateKey,
+        cert: sslConfig.certificate
+    };
+    server = https.createServer(options, app).listen(process.env.SSL_PORT);
+} else {
+    server = http.createServer(app);
+}
 
 app.use(morgan( process.env.NODE_ENV !== 'production'?'dev':'combined',{stream:winston.httpLogStream}));
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
+app.use(express.json({
+    limit : '50mb'
+}));
+app.use(express.urlencoded({
+    limit : '50mb',
+    extended: false
+}));
 
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
@@ -71,7 +83,6 @@ app.use((req, res, next) => {
     next(error);
 });
 
-
 app.use((err, req, res, next) => {
     res.locals.message = err.message;
     res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
@@ -82,17 +93,5 @@ app.use((err, req, res, next) => {
 
 app.set('etag', false);
 
-app.listen(app.get('port'), () => {
-    winston.info(app.get('port')+ '번 포트에서 대기중');
-});
-
 HighRank.searchAndtransm();
 stix_state.searchAndInsert();
-
-//클릭하우스 AI 결과테이블 상위연계
-HighRank_corr1.searchAndtransm();
-HighRank_corr2.searchAndtransm();
-HighRank_log.searchAndtransm();
-HighRank_packet.searchAndtransm();
-HighRank_op1.searchAndtransm();
-HighRank_op2.searchAndtransm();

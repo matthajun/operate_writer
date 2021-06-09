@@ -15,11 +15,8 @@ module.exports.searchAndInsert = async function() {
         try {
 
             const result = await db.sequelize.transaction(async (t) => {
-                winston.info("********************************************************************************");
-                winston.info("*******************query start *************************");
-
                 let rslt = db[tableName.toUpperCase()].findAll({where: {trans_tag_s: 'C'}}).then(users => {
-                    if(users){
+                    if(users.length){
                         let childInfos = [];
 
                         for(user of users) {
@@ -29,14 +26,13 @@ module.exports.searchAndInsert = async function() {
                         let results = {tableName: event_tableName, tableData: childInfos};
                         KeyChange.KeyChange_manag_state(results);
                         stixInsert.ParseandInsert(results);
+                        winston.info("**************************** STIX state Complete *****************************");
                     }
                 });
 
                 if (rslt instanceof Error) {
                     throw new rslt;
                 }
-                winston.info("********************************************************************************");
-                winston.info("*******************query end *************************");
             })
 
         } catch (error) {

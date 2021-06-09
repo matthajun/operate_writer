@@ -22,38 +22,18 @@ const clickhouse = new ClickHouse({
 const tableName = process.env.CH_I001;
 
 module.exports.parseAndInsert = async function(req) {
-    let Array = [];
-    let queries = [];
+    winston.info('**************** I001_unit go! ');
     for(let tag_list of req.body.body.tag_list) {
-        let req_body = {};
-        req_body = {...req.body.header, ...tag_list, date_time: setDateTime.setDateTime()};
-        Array.push(req_body);
-    }
+        let value = {};
+        value = {...req.body.header, ...tag_list, date_time: setDateTime.setDateTime()};
 
-    for(let value of Array){
         const contents = `${value.message_id}`+'\',\''+`${value.operate_info_id}`+'\',\''+`${value.send_time}`+'\',\''+`${value.unit_id}`
             +'\',\''+`${value.tag_name}`+'\',\''+`${value.tag_desc}`+'\',\''+`${value.date_time}`;
 
         const query = `insert into dti.${tableName} VALUES (\'${contents}\')`;
-        queries.push(query);
-    }
 
-    let rtnResult = {};
-    try {
+        const result = await clickhouse.query(query).exec(function (err, rows) {
 
-            for (const query of queries) {
-                let rslt = await clickhouse.query(query).toPromise();
-
-                if (rslt instanceof Error) {
-                    throw new Error(rslt);
-                }
-            }
-
-
-    } catch (error) {
-        winston.error(error.stack);
-        rtnResult = error;
-    } finally {
-        return rtnResult;
+        });
     }
 };

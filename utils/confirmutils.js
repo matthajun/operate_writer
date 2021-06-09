@@ -7,3 +7,15 @@ module.exports.makeConfirmCode  = function (strData){
 
     return b.toString(16);
 };
+
+module.exports.makeConfirmCodeForbumun  = function (strData){
+    if(strData) {
+        let a = CRC32.str(JSON.stringify(strData));
+        let b = a >>> 0;
+
+        return b.toString(16);
+    }
+    else {
+        return ''
+    }
+};

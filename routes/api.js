@@ -27,17 +27,19 @@ router.post('/v1', async (req, res, next) => {
             throw Error(`{"res_cd":"${errCode}"}`);
         }
 
-
         let result =  {};
         let ch_result = {};
+
+        winston.info("*************** Received Data : " + JSON.stringify(codeId));
+
         switch (codeId) {
             case "I001" :
-                result = await  CH_I001_bumun.parseAndInsert(req);
                 ch_result = await CH_I001.parseAndInsert(req);
+                result = await  CH_I001_bumun.parseAndInsert(req);
                 break;
             case "I002" :
-                result = await CH_I002_bumun.parseAndInsert(req);
                 ch_result = await CH_I002.parseAndInsert(req);
+                result = await CH_I002_bumun.parseAndInsert(req);
                 break;
             case "I003" :
                 result = await I003.parseAndInsert(req);
