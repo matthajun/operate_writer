@@ -35,11 +35,11 @@ router.post('/v1', async (req, res, next) => {
         switch (codeId) {
             case "I001" :
                 ch_result = await CH_I001.parseAndInsert(req);
-                result = await  CH_I001_bumun.parseAndInsert(req);
+                //result = await  CH_I001_bumun.parseAndInsert(req);
                 break;
             case "I002" :
                 ch_result = await CH_I002.parseAndInsert(req);
-                result = await CH_I002_bumun.parseAndInsert(req);
+                //result = await CH_I002_bumun.parseAndInsert(req);
                 break;
             case "I003" :
                 result = await I003.parseAndInsert(req);
