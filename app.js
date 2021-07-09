@@ -17,6 +17,8 @@ app.set('port', process.env.PORT || 8002);
 
 const stix_state = require('./STIX_service/stixInsert_managstate');
 const HighRank = require('./service/HighRank');
+const I002_High = require('./schedule/I002_HighPush');
+
 const http = require('http');
 const https = require('https');
 
@@ -95,3 +97,5 @@ app.set('etag', false);
 
 HighRank.searchAndtransm();
 stix_state.searchAndInsert();
+
+I002_High.searchAndtransm();
