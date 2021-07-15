@@ -37,8 +37,8 @@ module.exports.searchAndtransm = async function() {
     schedule.scheduleJob('10 * * * * *', async function() {
         let time = setDateTime.setDateTime_Twoago();
 
-        //const query = `select replace(hash,'Generator_','') as hash from dti.motie_ai_op_result where ai_label = 'True' and version = '2021-06-17 15:00:00' `;
-        const query = `select replace(hash,'Generator_','') as hash from dti.motie_ai_op_result where version > '${time}' and ai_label = 'True' `;
+        //const query = `select splitByChar('_', hash)[2] as hash from dti.motie_ai_op_result where ai_label = 'True' and version = '2021-06-17 15:00:00' `;
+        const query = `select splitByChar('_', hash)[2] as hash from dti.motie_ai_op_result where version > '${time}' and ai_label = 'True' `;
 
         let rtnResult = {};
         let I002_array = [];
@@ -82,7 +82,7 @@ module.exports.searchAndtransm = async function() {
                         tableInfo = {tableName: 'motie_manag_I002', tableData: _.cloneDeep(I002_array)};
                         makereq.highrankPush(tableInfo);
                     }
-                }, 20000)
+                }, 50000)
 
             }
             else {
