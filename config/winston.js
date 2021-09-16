@@ -21,7 +21,7 @@ const myFormat = printf(({ level, message, label, timestamp ,stack}) => {
 
 const appendTimestamp = winston.format((info, opts) => {
     if(opts.tz)
-        info.timestamp = moment().tz(opts.tz).format('YYYY-MM-DD, HH:mm:ss');
+        info.timestamp = moment().tz(opts.tz).format('YYYY-MM-DD THH:mm:ss');
     return info;
 });
 
@@ -48,7 +48,7 @@ const logger = function (callingModule) {
                 zippedArchive: true,
                 format: combine(
                     label({ label: getLabel(callingModule)}),
-                    timestamp(),
+                    appendTimestamp({ tz: 'Asia/Seoul'}),
                     myFormat
                 )
             }),
@@ -62,7 +62,7 @@ const logger = function (callingModule) {
                 zippedArchive: true,
                 format: combine(
                     label({ label: getLabel(callingModule)}),
-                    timestamp(),
+                    appendTimestamp({ tz: 'Asia/Seoul'}),
                     myFormat
                 )
             }),
@@ -75,11 +75,11 @@ const logger = function (callingModule) {
                 zippedArchive: true,
                 json: true,
                 format: combine(
-                        appendTimestamp({ tz: 'Asia/Seoul'}),
-                        printf(info => {
+                    appendTimestamp({ tz: 'Asia/Seoul'}),
+                    printf(info => {
                         return `${info.timestamp} : \n ${JSON.stringify(info.message, null, 2)}`;
                     })
-                    )
+                )
             })
         ],
         exitOnError: false,
@@ -89,7 +89,7 @@ const logger = function (callingModule) {
         levels: myCustomLevels.levels,
         format: combine(
             label({ label: 'http' }),
-            timestamp(),
+            appendTimestamp({ tz: 'Asia/Seoul'}),
             myFormat,
         ),
         transports: [
@@ -102,7 +102,7 @@ const logger = function (callingModule) {
                 zippedArchive: true,
                 format: combine(
                     label({ label: 'http'}),
-                    timestamp(),
+                    appendTimestamp({ tz: 'Asia/Seoul'}),
                     myFormat
                 )
             })
@@ -111,8 +111,8 @@ const logger = function (callingModule) {
 
     if(process.env.NODE_ENV !== 'production'){
         logger.add(
-             new winston.createLogger({
-                 levels: myCustomLevels.levels,
+            new winston.createLogger({
+                levels: myCustomLevels.levels,
                 transports: [
                     new winston.transports.Console({
                         level:'debug',
@@ -122,7 +122,7 @@ const logger = function (callingModule) {
                         colorize:true,
                         format: combine(
                             label({ label: getLabel(callingModule)}),
-                            timestamp(),
+                            appendTimestamp({ tz: 'Asia/Seoul'}),
                             myFormat
                         )
                     })
@@ -140,7 +140,7 @@ const logger = function (callingModule) {
                         colorize:true,
                         format: combine(
                             label({ label: 'http'}),
-                            timestamp(),
+                            appendTimestamp({ tz: 'Asia/Seoul'}),
                             myFormat
                         )
                     })

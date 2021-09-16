@@ -24,6 +24,7 @@ function jsonToCSV(json_data) {
 
 module.exports.parseAndInsert = async function(req) {
     winston.info('**************** I002_unit go! ');
+    let rtnResult = [];
     let query = [];
 
     for(let tag_list of req.body.body.tag_list) {
@@ -45,7 +46,13 @@ module.exports.parseAndInsert = async function(req) {
         var clickhouseStream = ch.query(`insert into dti.${tableName} `);
 
         csvStream.pipe(clickhouseStream)
-    }catch(err){
-        console.log(err);
+    }
+    catch (error) {
+        // If the execution reaches this line, an error occurred.
+        // The transaction has already been rolled back automatically by Sequelize!
+        winston.error(error.stack);
+        rtnResult = error;
+    } finally {
+        return rtnResult;
     }
 };
